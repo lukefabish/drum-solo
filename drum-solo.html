@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Drum Solo</title>
+
+  <script>
+  
+    var sampleLocn = "drum-samples/";
+
+    var samples = [
+          "clap-crushed.wav", "crash-tape.wav", "clap-tape.wav",
+          "tom-acoustic02.wav", "hihat-dist01.wav", "hihat-dist02.wav",
+          "cowbell-808.wav", "hihat-acoustic01.wav", "kick-acoustic01.wav",
+          "kick-acoustic02.wav", "crash-acoustic.wav", "kick-zapper.wav",
+          "snare-dist01.wav", "hihat-acoustic02.wav", "openhat-acoustic01.wav",
+          "perc-hollow.wav", "tom-acoustic01.wav", "tom-rototom.wav",
+          "perc-tribal.wav", "perc-weirdo.wav", "snare-acoustic02.wav",
+          "ride-acoustic01.wav", "ride-acoustic02.wav", "snare-acoustic01.wav",
+          "snare-dist02.wav", "tom-short.wav"
+    ];
+
+    var pauses = [];
+    var played = [];
+
+    function playSound(evt){
+
+      var chr = String.fromCharCode(evt.keyCode);
+
+      var idx = 0;
+      if( chr >= "A" && chr <= "Z"){
+
+        idx = chr.charCodeAt(0) - 65;
+
+        played[played.length] = idx;
+        pauses[pauses.length] = new Date().getTime();
+
+        playSample(samples[idx]);
+      }
+    }
+
+    function replay(){
+
+      var delay = 0;
+      for( var idx = 0; idx < played.length; idx++ ){
+
+        if(idx > 0){
+          delay = delay + (pauses[idx] - pauses[idx-1]);
+        }
+
+        var f = function(x){ playSample(samples[x]); };
+
+        setTimeout(f.bind(null,played[idx]), delay);
+      }
+    }
+
+    function charCode(str){
+      return str.charCodeAt(0);
+    }
+
+    function playSample(sampleFile){
+      new Audio(sampleLocn + sampleFile).play();
+    }
+
+  </script>
+
+</head>
+
+<body>
+  <h1>Drums: Solo as you type</h1>
+
+  <label for="drumtext">Get typing (warning: <em>SOUND</em>) </label> <br>
+  <textarea name="drumtext" cols="50" onkeydown="playSound(event)"></textarea>
+  <br>
+  <button onclick="replay()">Replay Your Awesome Solo</button>
+
+</body>
+</html>
